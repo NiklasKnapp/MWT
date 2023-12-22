@@ -1,6 +1,18 @@
 # MWT
 Middleware Technologies
 
+## Issue
+
+Backend is not available using the commans mentioned in test.cmd:
+
+curl -X POST -F "file=@test.csv" https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev/upload
+
+curl https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev/headers
+
+curl -X POST -F "file=@test.csv" https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev:5000/upload
+
+curl https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev:5000/headers
+
 ## My App
 
 ### Structure
