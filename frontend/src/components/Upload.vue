@@ -5,6 +5,7 @@
     <select v-model="selectedHeader">
       <option v-for="header in headers" :key="header">{{ header }}</option>
     </select>
+    <button @click="getHeaders">Get Headers</button>
     <button @click="trainModel">Train Model</button>
     <div v-if="rSquared !== null">
       R-squared Score: {{ rSquared }}
@@ -13,6 +14,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -30,7 +33,7 @@ export default {
       const formData = new FormData();
       formData.append('file', this.file);
 
-      axios.post('https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev/:5000/upload', formData)
+      axios.post('https://mwt_backend_1:5000/upload', formData)
         .then(response => {
           // Handle the response from the server
           console.log(response.data);
@@ -40,9 +43,31 @@ export default {
           console.error('Error uploading file:', error);
         });
     },
+    getHeaders() {
+      console.log('Headers:');
+      axios.get('https://mwt_backend_1:5000/headers/43')
+        .then(response => {
+          // Handle the response from the server
+          console.log("Response: ");
+          console.log(response.data);
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Error retrieving headers:', error);
+        });
+      },
     trainModel() {
-      // Use axios or another library to make a POST request to the backend
-      // with the selected header and get the R-squared score
+      axios.get('https://mwt_backend_1:5000/headers/43')
+        .then(response => {
+          // Handle the response from the server
+          console.log("Response: ");
+          console.log(response.data);
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Error retrieving headers:', error);
+        });
+      },
     },
   },
 };

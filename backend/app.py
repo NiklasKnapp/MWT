@@ -10,56 +10,85 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://your_user:your_password@postgres/your_database'
 db = SQLAlchemy(app)
 
-class Data(db.Model):
+logging.getLogger().setLevel(logging.DEBUG)
+
+class DynamicModel(db.Model):
+    __tablename__ = 'my_table'
     id = db.Column(db.Integer, primary_key=True)
-    header = db.Column(db.String(255))
 
-@app.route('/upload', methods=['POST'])
+def create_model_class(csv_columns):
+    # Dynamically create columns based on CSV columns
+    for column in csv_columns:
+        setattr(DynamicModel, column, db.Column(db.String(255)))
+
+    return DynamicModel
+
+def save_csv_to_database(file, model_class):
+    df = pd.read_csv(file)
+    model_class.__table__.create(db.engine, checkfirst=True)
+    
+    # Create the sequence for the id column
+    db.engine.execute("CREATE SEQUENCE dynamic_model_table_id_seq START 1")
+    
+    df.to_sql('my_table', db.engine, if_exists='replace', index=False)
+
+def read_data_from_database(model_class):
+    # Fetch data from the database using SQLAlchemy
+    query_result = db.session.query(model_class).all()
+
+    # Convert the query result to a list of dictionaries
+    data = [{column.name: getattr(row, column.name) for column in model_class.__table__.columns} for row in query_result]
+
+    # Convert the list of dictionaries to a DataFrame
+    df = pd.DataFrame(data)
+
+    return df
+
+@app.route('/upload', methods=['GET'])
 def upload():
-    logging.debug("start upload")
+    logging.info("start upload")
     #file = request.files['file']
-    #df = pd.read_csv(file)
-    #headers = df.columns.tolist()
-    headers = ['header1', 'header2']
-    logging.debug(headers)
+    file = 'test.csv'
+    df = pd.read_csv(file)
+    csv_columns = df.columns.tolist()
+    logging.debug(csv_columns)
 
-    #TODO persist file
+    # Create a dynamic SQLAlchemy model based on CSV columns
+    DynamicModel = create_model_class(csv_columns)
 
-    return 200
+    # Save the CSV data to the database using the dynamic model
+    save_csv_to_database(file, DynamicModel)
 
-@app.route('/headers/<int:id>', methods=['GET'])
-def get_headers(id):
+    logging.info("upload successful")
+
+    return jsonify({"headers": csv_columns})
+
+@app.route('/headers', methods=['GET'])
+def get_headers():
     logging.debug("return headers")
-    #TODO get data from DB
+    df = read_data_from_database(DynamicModel)
 
-    headers = ['header1', 'header2', id]
+    headers = ['header1', 'header2']
     logging.debug(headers)
 
     return jsonify({'headers': headers})
 
-@app.route('/train/<int:id>/<string:column>', methods=['Get'])
-def train(id, column):
-    #df = {
-    #    1: {"name": "John", "age": 25},
-    #    2: {"name": "Jane", "age": 30},
-    #    3: {"name": "Bob", "age": 22},
-    #}
-    
-    #TODO: get data from db
+@app.route('/train/<string:column>', methods=['Get'])
+def train(column):
+    df = read_data_from_database(DynamicModel)
 
-    #X = df.drop(columns=[column])
-    #y = df[column]
+    X = df.drop(columns=[column])
+    y = df[column]
 
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    #model = LinearRegression()
-    #model.fit(X_train, y_train)
-    #y_pred = model.predict(X_test)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
 
-    #r_squared = r2_score(y_test, y_pred)
+    r_squared = r2_score(y_test, y_pred)
 
-    #return jsonify({'r_squared': r_squared})
-    return 1
+    return jsonify({'r_squared': r_squared})
 
 if __name__ == '__main__':
     with app.app_context():
