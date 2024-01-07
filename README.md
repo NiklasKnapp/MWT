@@ -30,3 +30,8 @@ A postgres database to persist the data.
 ### Usage
 
 The workflow starts with uploading a csv file in the frontend. This will be sent to the backend, where the columns headers are extracted and sent back to the frontend. There you can select one header, which is sent to the backend that trains a linear regression model for this column as the target. It calculates the r-squared value and returns it to the frontend, where it is displayed.
+
+- For backend testing start the containers with docker-compose up --build to set up everything clean (no data in database)
+- Go to https://vigilant-space-halibut-4w9vq4vpgrrc5r55-5000.app.github.dev/upload to upload the test.csv file
+- Go to https://vigilant-space-halibut-4w9vq4vpgrrc5r55-5000.app.github.dev/headers to get all the headers from the data
+- Go to https://vigilant-space-halibut-4w9vq4vpgrrc5r55-5000.app.github.dev/train/G1 to calculate the r-squared value for the G1 column (you can replace this with any other column)
