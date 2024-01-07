@@ -5,9 +5,19 @@ Middleware Technologies
 
 Backend with database connection and persisting the data works. Only frontend connection fails.
 
-## Issue
+## Issues
+
+### Backend
 
 Only one upload works, a second one fails, so the data is not changeable.
+
+### Frontend
+
+Frontend connection does not work yet. To see what happens you can uncomment the frontend from the docker-compose file, trigger the upload in the backend via https://vigilant-space-halibut-4w9vq4vpgrrc5r55-5000.app.github.dev/upload and try to get the headers by clicking the "Get headers" button in the frontend, accessible via https://vigilant-space-halibut-4w9vq4vpgrrc5r55-8080.app.github.dev/
+
+I get "Failed to load resource: net::ERR_NAME_NOT_RESOLVED" in the browser concole.
+
+Don't forget to start clean using docker-compose up --build.
 
 ## My App
 

@@ -45,7 +45,7 @@ export default {
     },
     getHeaders() {
       console.log('Headers:');
-      axios.get('https://mwt_backend_1:5000/headers/43')
+      axios.get('https://mwt_backend_1:5000/headers')
         .then(response => {
           // Handle the response from the server
           console.log("Response: ");
@@ -57,7 +57,7 @@ export default {
         });
       },
     trainModel() {
-      axios.get('https://mwt_backend_1:5000/headers/43')
+      axios.get('https://mwt_backend_1:5000/headers')
         .then(response => {
           // Handle the response from the server
           console.log("Response: ");
@@ -67,7 +67,6 @@ export default {
           // Handle errors
           console.error('Error retrieving headers:', error);
         });
-      },
     },
   },
 };
