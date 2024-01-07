@@ -19,16 +19,14 @@ class DynamicModel(db.Model):
 def create_model_class(csv_columns):
     # Dynamically create columns based on CSV columns
     for column in csv_columns:
-        setattr(DynamicModel, column, db.Column(db.String(255)))
+        if column != 'id':
+            setattr(DynamicModel, column, db.Column(db.String(255)))
 
     return DynamicModel
 
 def save_csv_to_database(file, model_class):
     df = pd.read_csv(file)
     model_class.__table__.create(db.engine, checkfirst=True)
-    
-    # Create the sequence for the id column
-    db.engine.execute("CREATE SEQUENCE dynamic_model_table_id_seq START 1")
     
     df.to_sql('my_table', db.engine, if_exists='replace', index=False)
 
@@ -43,6 +41,9 @@ def read_data_from_database(model_class):
     df = pd.DataFrame(data)
 
     return df
+
+def reset_data(model_class):
+    
 
 @app.route('/upload', methods=['GET'])
 def upload():
@@ -68,7 +69,7 @@ def get_headers():
     logging.debug("return headers")
     df = read_data_from_database(DynamicModel)
 
-    headers = ['header1', 'header2']
+    headers = list(df.columns)
     logging.debug(headers)
 
     return jsonify({'headers': headers})
