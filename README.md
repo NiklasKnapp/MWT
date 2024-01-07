@@ -1,10 +1,13 @@
 # MWT
 Middleware Technologies
 
+## Status
+
+Backend with database connection and persisting the data works. Only frontend connection fails.
+
 ## Issue
 
-The following command works in browser, but not with curl and I can't figure out what I miss:
-https://symmetrical-invention-rpv679657qx2pwgq-5000.app.github.dev/headers
+Only one upload works, a second one fails, so the data is not changeable.
 
 ## My App
 
