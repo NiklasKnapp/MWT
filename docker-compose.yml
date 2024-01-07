@@ -7,12 +7,6 @@ services:
       POSTGRES_DB: your_database
       POSTGRES_USER: your_user
       POSTGRES_PASSWORD: your_password
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - ./init:/docker-entrypoint-initdb.d
-#    networks:
-#      - my_network
 
   backend:
     build:
@@ -21,8 +15,6 @@ services:
       - "5000:5000"
     depends_on:
       - postgres
-#    networks:
-#      - my_network
 
 #  frontend:
 #    build:
@@ -31,8 +23,3 @@ services:
 #      - "8080:8080"
 #    depends_on:
 #      - backend
-#    networks:
-#      - my_network
-
-#networks:
-#  my_network:

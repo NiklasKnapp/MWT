@@ -43,6 +43,9 @@ def read_data_from_database(model_class):
     return df
 
 def reset_data(model_class):
+    # Drop the table if it exists
+    model_class.__table__.drop(db.engine, checkfirst=True)
+
     
 
 @app.route('/upload', methods=['GET'])
